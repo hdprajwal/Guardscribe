@@ -1,6 +1,9 @@
 # Google credentials
 google-credentials.json
 
+# kaggle credentials
+kaggle.json
+
 # Audio files
 *.mp3
 *.wav
