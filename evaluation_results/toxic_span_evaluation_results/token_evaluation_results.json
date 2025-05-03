@@ -1,0 +1,27 @@
+{
+  "metrics": {
+    "span_level": {
+      "precision": 0.6207415125178536,
+      "recall": 0.6747391695518778,
+      "f1": 0.6231856731411201
+    },
+    "latency": {
+      "mean": 4.877400994300842,
+      "p95": 5.5413126945495605,
+      "max": 177.40225791931152
+    },
+    "examples_count": {
+      "correct": 728,
+      "partial": 780,
+      "missed": 98,
+      "false": 377,
+      "correct_empty": 17
+    }
+  },
+  "examples_count": {
+    "correct": 10,
+    "partial": 10,
+    "missed": 10,
+    "false": 10
+  }
+}

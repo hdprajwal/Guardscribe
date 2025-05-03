@@ -1,0 +1,71 @@
+FALSE POSITIVES (Non-toxic texts classified as toxic)
+================================================================================
+
+Example 1 (Probability: 0.9777):
+I wish this moron would have been shot to death by the US soldier instead of the other way around. I hope that 10 million is given to the soldier's family who actually deserve it.
+
+Example 2 (Probability: 0.9724):
+Chris Birch is a mean, self-centered, contrary ass. He repeatedly interrupted Robin Brena during his presentation and always, always sucks up to Big Oil. He could care less about his constituents and the rest of Alaska. He needs to get gone. What has he done for you, South Anchorage? Sarcastic is the perfect adjective for Chris Birch!
+
+Example 3 (Probability: 0.9555):
+I always knew you were a dirty cop.
+
+Example 4 (Probability: 0.9604):
+More garbage pro terrorist anti Canadian drivel from the Globe, how's the subscriptions going? anyone still pay for this junk.
+
+Example 5 (Probability: 0.8015):
+Trump will get the ban back in place and keep those moslums out, hazzah!
+
+Example 6 (Probability: 0.9944):
+Hey Repubes, I bet you think that "wall" is going to be built on Mexicos dollar too huh? What a bunch of gullible losers!!!!
+
+Example 7 (Probability: 0.9896):
+But that's what you get now for minimum wage.  
+
+Increasing that to a 'livable wage' for the exact same people is stupid!
+
+Example 8 (Probability: 0.9965):
+Hillary Clinton is a liar, thief, foul-mouthed, evil, dishonorable, sexual predator enabler and you choose to support her. What does that indicate about you?
+
+Example 9 (Probability: 0.9937):
+So just how are people supposed to react to an actual siren warning??  Maybe bend over, grab your ankles and kiss your sweet arse goodbye??
+
+Example 10 (Probability: 0.9705):
+I hope there aren't any stupid few Canarians who say the mountain is sacred. The few lolo Hawaiians ruin it for the many Hawaiians. Did I say the few lolo Hawaiians ruin it for the many Hawaiians?
+
+
+
+FALSE NEGATIVES (Toxic texts classified as non-toxic)
+================================================================================
+
+Example 1 (Probability: 0.0032):
+A rock has more mental horsepower than the indubitably ignorant. And more integrity as well. They're largely very dishonest people who repeat the same lies over and over. Just like their 🍊 hero.
+
+Example 2 (Probability: 0.0195):
+Trump troll...
+
+Example 3 (Probability: 0.0390):
+What exactly is suspicious about it? Taking the advice of the entire democrat party? Partisan politics is our reality. It's not my fault democrats complain when they get what they called for. They are hypocrites, maybe they are mad Obama didn't have the stones to do this himself.
+
+Example 4 (Probability: 0.0314):
+They're not patriots. They're vandals, thieves, and bullies. They've plastered a facade of patriotism over their outrage at being expected to obey the law.
+
+Example 5 (Probability: 0.0158):
+The media is crooked and biased. It's pretty obvious. And they don't seem to care what we think about them. They can influence enough idiots to get their way, they'll do it. I have never hated the media more than I do now. I won't even watch The Today Show because they're a part of NBC. I only watch Fox.
+
+Example 6 (Probability: 0.6652):
+Rabidly anti-Canadian troll.
+
+Example 7 (Probability: 0.0308):
+No, my poor benighted correspondent, your reductionism reveals an archaic mindset. Intersex, questioning, nongendered, and a vast variety of others have rights too!
+
+Example 8 (Probability: 0.0111):
+No but most forget that there are a ton of Opel & Vauxhaul (Gm ) and Fords sold in Europe. Some of which are some of Europes largest selling models.Ford sold over 1 million cars in Europe in 2015 while GM sold almost as many. Trump is an idiot that is going to cost American taxpayers jobs and money and likely drag us into it as well. When you have a team of people that no practically nothing of what they are supposed to represent then it will end very bad.
+
+Example 9 (Probability: 0.0210):
+When you consider the source - he writes like the Trump we've all come to know -  "I could stand in the middle of 5th Avenue and shoot somebody and I wouldn't lose voters", a racist, 
+misgynistic, liar who only brings hate to the table.
+
+Example 10 (Probability: 0.0299):
+you missed the point totally, nobody said that he did not have the constitutional right to do what she did, they are questioning the appropriateness of her actions.  acting like a jerk in front of a national tv audience is not proper demeanor for an elected delegate representing the democratic party and Hawaii.  she brought shame and dishonor to us.
+

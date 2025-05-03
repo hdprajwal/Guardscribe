@@ -10,7 +10,69 @@ import webrtcvad
 import wave
 import tempfile
 import torch
-from transformers import pipeline
+from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
+
+
+class Wav2Vec2ASR:
+    """Speech-to-text transcription using Facebook's Wav2Vec 2.0"""
+
+    def __init__(self, model_name="facebook/wav2vec2-base-960h",
+                 device=None):
+        """
+        Initialize the Wav2Vec 2.0 ASR engine.
+
+        Args:
+            model_name: Name or path of the Wav2Vec 2.0 model
+            device: Device to use for inference ('cuda' or 'cpu')
+        """
+        self.model_name = model_name
+
+        # Set device
+        if device is None:
+            self.device = torch.device(
+                "cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = torch.device(device)
+
+        print(f"Using device: {self.device}")
+
+        # Initialize Wav2Vec2 model and processor
+        print(f"Loading Wav2Vec2 model {model_name}...")
+        self.processor = Wav2Vec2Processor.from_pretrained(model_name)
+        self.model = Wav2Vec2ForCTC.from_pretrained(model_name)
+        self.model.to(self.device)
+
+        print("Wav2Vec2 ASR engine initialized.")
+
+    def _transcribe_array(self, audio_array):
+        """
+        Transcribe audio data as numpy array.
+
+        Args:
+            audio_array: Audio data as numpy array (float32, normalized to [-1.0, 1.0])
+
+        Returns:
+            str: Transcribed text
+        """
+        # Prepare input for the model
+        inputs = self.processor(
+            audio_array,
+            sampling_rate=16000,
+            return_tensors="pt",
+            padding="longest"
+        ).to(self.device)
+
+        # Perform inference
+        with torch.no_grad():
+            logits = self.model(inputs.input_values).logits
+
+        # Get predicted ids
+        predicted_ids = torch.argmax(logits, dim=-1)
+
+        # Convert ids to text
+        transcription = self.processor.batch_decode(predicted_ids)[0]
+
+        return transcription
 
 
 class SpeechToTextPipeline:
@@ -18,7 +80,7 @@ class SpeechToTextPipeline:
     A flexible Speech-to-Text pipeline that supports multiple ASR models:
     - OpenAI Whisper (local)
     - Google Speech-to-Text API (cloud-based)
-    - HuggingFace Transformers (local)
+    - Facebook Wav2Vec2 (local)
     """
 
     def __init__(self, asr_model="whisper", sample_rate=16000, frame_duration=30,
@@ -27,7 +89,7 @@ class SpeechToTextPipeline:
         Initialize the Speech-to-Text pipeline.
 
         Args:
-            asr_model (str): ASR model to use ("whisper", "google", "transformers")
+            asr_model (str): ASR model to use ("whisper", "google")
             sample_rate (int): Audio sample rate in Hz
             frame_duration (int): Frame duration in milliseconds
             vad_mode (int): Voice Activity Detection aggressiveness (0-3)
@@ -50,7 +112,7 @@ class SpeechToTextPipeline:
         if asr_model == "whisper":
             print("Loading Whisper model...")
             self.model = whisper.load_model(
-                "base", device="cuda" if torch.cuda.is_available() else "cpu")
+                "small", device="cuda" if torch.cuda.is_available() else "cpu")
             print("Whisper model loaded")
         elif asr_model == "google":
             if google_credentials:
@@ -66,14 +128,12 @@ class SpeechToTextPipeline:
                 config=self.config,
                 interim_results=True,
             )
-        elif asr_model == "transformers":
-            print("Loading HuggingFace ASR model...")
-            self.model = pipeline(
-                "automatic-speech-recognition",
-                model="openai/whisper-large-v3-turbo",
-                device=0 if torch.cuda.is_available() else -1
-            )
-            print("HuggingFace ASR model loaded")
+        elif asr_model == "wav2vec":
+            print("Loading Wav2Vec2 model...")
+            self.model = Wav2Vec2ASR(model_name="facebook/wav2vec2-base-960h",
+                                     vad_aggressiveness=vad_mode, device="cuda" if torch.cuda.is_available() else "cpu")
+            print("Wav2Vec2 model loaded")
+
         else:
             raise ValueError(f"Unsupported ASR model: {asr_model}")
 
@@ -212,17 +272,14 @@ class SpeechToTextPipeline:
                 return ""
 
             return response.results[0].alternatives[0].transcript.strip()
-
-        elif self.asr_model == "transformers":
-            # Convert bytes to numpy array for transformers
+        elif self.asr_model == "wav2vec":
+            # Convert bytes to numpy array for Wav2Vec2
             audio_array = np.frombuffer(
                 audio_data, dtype=np.int16).astype(np.float32) / 32768.0
 
-            # Transcribe with transformers
-            # Pass audio data in the correct format for transformers pipeline
-            result = self.model(
-                {"raw": audio_array, "sampling_rate": self.sample_rate})
-            return result["text"].strip()
+            # Transcribe with Wav2Vec2
+            result = self.model._transcribe_array(audio_array)
+            return result
         return ""
 
     def get_transcription(self):
@@ -249,8 +306,9 @@ def main():
         # Process transcriptions as they come in
         while True:
             text, latency = pipeline.get_transcription()
-            print("Transcription: ", text)
-            print("Latency: ", latency)
+            if text and latency:
+                print("Transcription: ", text)
+                print("Latency: ", latency)
 
             time.sleep(0.1)
 
@@ -260,7 +318,7 @@ def main():
         pipeline.stop()
 
 
-def benchmark_asr_models(audio_file, models=["whisper", "google", "transformers"]):
+def benchmark_asr_models(audio_file, models=["whisper", "wav2vec"]):
     """
     Benchmark different ASR models on the same audio file.
 
