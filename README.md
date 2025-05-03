@@ -13,6 +13,7 @@ GuardScribe is a versatile speech-to-text system designed to transcribe live aud
   - OpenAI Whisper (local processing)
   - Google Speech-to-Text API (cloud-based)
   - HuggingFace Transformers (local processing with Whisper large-v3-turbo)
+  - Wav2Vec2 (local processing with Facebook's Wav2Vec2 model)
 - **Voice Activity Detection (VAD)** to efficiently process speech segments
 - **Performance metrics** including latency tracking for ASR benchmarking
 
@@ -41,6 +42,11 @@ GuardScribe is comprised of several components:
 - `app.py`: Application that integrates speech recognition with content detection
 - `text_clf_model.py`: Training pipeline for DistilBERT-based text classification models
 - `token_clf_model.py`: Training pipeline for DistilBERT-based token-level classification
+- `evaluate_asr.py`: Evaluation tools for benchmarking ASR performance
+- `evaluate_detector.py`: Evaluation tools for testing toxicity detection models
+- `evaluate_token_masking.py`: Evaluation tools for testing token-level masking
+- `make_dataset.py`: Utility for preparing training datasets
+- `upload_model.py`: Script for uploading models to Kaggle Hub
 
 The system uses DistilBERT as the foundation for its content detection models:
 
@@ -66,6 +72,14 @@ sudo apt-get install portaudio19-dev python3-pyaudio
 
 ### Python Dependencies
 
+Install all required packages using the requirements file:
+
+```bash
+pip install -r requirements.txt
+```
+
+Or install the core dependencies manually:
+
 ```bash
 pip install sounddevice numpy torch torchaudio openai-whisper webrtcvad transformers google-cloud-speech pandas matplotlib tqdm scikit-learn
 ```
@@ -90,7 +104,7 @@ from detector import ContentDetector
 
 # Initialize ASR pipeline with Whisper
 pipeline = SpeechToTextPipeline(
-    asr_model="whisper",  # Options: "whisper", "google", "transformers"
+    asr_model="whisper",  # Options: "whisper", "google", "wav2vec", "transformers"
     sample_rate=16000,
     frame_duration=30,
     vad_mode=3
@@ -151,6 +165,74 @@ This trains a DistilBERT-based model for token-level toxic span detection:
 - Provides span-level F1 score evaluation
 - Saves the trained model to `toxic_span_distilbert`
 
+### Creating and Processing Datasets
+
+To prepare datasets for training:
+
+```bash
+python make_dataset.py
+```
+
+This utility processes toxic span datasets and creates labeled datasets suitable for model training.
+
+### Model Sharing
+
+Upload trained models to Kaggle Hub for sharing:
+
+```bash
+python upload_model.py
+```
+
+This uploads the trained models to Kaggle Hub for easier sharing and distribution.
+
+## Evaluation
+
+The system provides comprehensive evaluation tools for all components:
+
+### ASR Evaluation
+
+```bash
+python evaluate_asr.py --results_dir ./evaluation_results/asr_evaluation_results \
+                       --data_dir ./data/LJSpeech-1.1 \
+                       --asr_models whisper wav2vec google \
+                       --max_samples 100 \
+                       --normalized_text \
+                       --generate_plots \
+                       --analyze_errors
+```
+
+This evaluates ASR models on the LJSpeech dataset with the following metrics:
+
+- Word Error Rate (WER)
+- Character Error Rate (CER)
+- Latency
+- Real-Time Factor (RTF)
+
+### Toxicity Detection Evaluation
+
+```bash
+python evaluate_detector.py
+```
+
+This evaluates the toxicity detection model with:
+
+- Precision, Recall, F1 score
+- ROC and PR curves
+- Latency measurements
+- Error analysis with samples of false positives and false negatives
+
+### Token Masking Evaluation
+
+```bash
+python evaluate_token_masking.py
+```
+
+This evaluates the token-level detection model with:
+
+- Span-level F1 score
+- Visualization of correctly/incorrectly detected spans
+- Performance across different thresholds
+
 ## Benchmarking
 
 The system includes built-in benchmarking capabilities for comparing different ASR models:
@@ -161,6 +243,12 @@ from asr import benchmark_asr_models
 # Compare performance of different ASR models
 results = benchmark_asr_models(
     audio_file="path/to/audio.wav",
-    models=["whisper", "google", "transformers"]
+    models=["whisper", "google", "wav2vec"]
 )
 ```
+
+This will provide comparative performance metrics for each ASR engine, including:
+
+- Transcription accuracy
+- Processing latency
+- Real-time factor
