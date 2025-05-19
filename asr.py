@@ -131,7 +131,7 @@ class SpeechToTextPipeline:
         elif asr_model == "wav2vec":
             print("Loading Wav2Vec2 model...")
             self.model = Wav2Vec2ASR(model_name="facebook/wav2vec2-base-960h",
-                                     vad_aggressiveness=vad_mode, device="cuda" if torch.cuda.is_available() else "cpu")
+                                     device="cuda" if torch.cuda.is_available() else "cpu")
             print("Wav2Vec2 model loaded")
 
         else:
