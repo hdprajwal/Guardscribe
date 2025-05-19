@@ -1,3 +1,12 @@
+---
+title: {{title}}
+emoji: {{emoji}}
+colorFrom: {{colorFrom}}
+colorTo: {{colorTo}}
+sdk: {{sdk}}
+sdk_version: "{{sdkVersion}}"
+---
+
 # GuardScribe
 
 ## Real-Time Speech-to-Text with Toxic Content Detection and Filtering
