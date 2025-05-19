@@ -1,10 +1,10 @@
 ---
-title: {{title}}
-emoji: {{emoji}}
-colorFrom: {{colorFrom}}
-colorTo: {{colorTo}}
-sdk: {{sdk}}
-sdk_version: "{{sdkVersion}}"
+title: Guardscribe
+emoji: 🎙️
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+sdk_version: "4.19.2"
 ---
 
 # GuardScribe
